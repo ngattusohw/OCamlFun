@@ -35,6 +35,17 @@ let is_singleton l =
 	| [x] -> true
 	| _ -> false;;
 
+(* let swap =  *)
+
+(* val app : ('a -> 'b) -> 'a -> 'b = <fun> *)
+let app f i = f i;;
+
+(* val twice : ('a -> 'a) -> 'a -> 'a = <fun> *)
+let twice f i = f (f i);;
+
+(* val compose : ('a -> 'b) -> ('c -> 'a) -> 'c -> 'b = <fun> *)
+let compose f g i = f ( g i );;
+
 (* TESTS *)
 print_string "Seven tests::\n";;
 
