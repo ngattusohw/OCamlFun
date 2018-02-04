@@ -1,5 +1,15 @@
+(* Nick Gattuso
+I pledge my honor that I have abided by the Stevens Honor System *)
+
+
 (* add : int -> int -> int *)
 let add x y = x+y;;
+
+type calcExp =
+	| Const of int
+	| Add of (calcExp*calcExp)
+	| Sub of (calcExp*calcExp) | Mult of (calcExp*calcExp)
+	| Div of (calcExp*calcExp);;
 
 (* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  EXERCISE 1 !!!!!!!!!!!!!!!!!!!!!!!!! *)
 
@@ -50,6 +60,17 @@ let compose f g i = f ( g i );;
 
 (* !!!!!!!!!!!!!!!!!!!!!!!!!!!!! Exercise 2 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! *)
 
+(* val remAdjDups : 'a list -> 'a list = <fun> *)
+let rec remAdjDups = function
+	| [] -> []
+	| [x] -> [x]
+	| x::y::xs -> if x = y then remAdjDups (y::xs) else x :: remAdjDups (y::xs);;
+
+(* val belongsTo_ext : 'a -> 'a list -> bool = <fun> *)
+let rec belongsTo_ext elem l =
+	match l with
+	| [] -> false
+	| x::xs -> if x = elem then true else belongsTo_ext elem xs;;
 
 (* val union_char : 'a -> ('a -> bool) -> ('a -> bool) -> bool = <fun> *)
 let union_char x f1 f2 = (f1 x) || (f2 x);;
@@ -71,18 +92,6 @@ let intersection_char x f1 f2 = (f1 x) && (f2 x);;
 
 (* val belongsTo_char : 'a -> ('a -> bool) -> bool = <fun> *)
 let belongsTo_char x f = if f x then true else false;;
-
-(* val belongsTo_ext : 'a -> 'a list -> bool = <fun> *)
-let rec belongsTo_ext elem l =
-	match l with
-	| [] -> false
-	| x::xs -> if x = elem then true else belongsTo_ext elem xs;;
-
-(* val remAdjDups : 'a list -> 'a list = <fun> *)
-let rec remAdjDups = function
-	| [] -> []
-	| [x] -> [x]
-	| x::y::xs -> if x = y then remAdjDups (y::xs) else x :: remAdjDups (y::xs);;
 
 (* val sublists : 'a list -> 'a list list = <fun> *)
 let rec sublists = function
