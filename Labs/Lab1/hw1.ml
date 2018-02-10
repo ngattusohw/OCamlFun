@@ -157,9 +157,6 @@ let rec evalCf elem = foldC (fun i -> i) (+) (-) ( * ) (/) elem;;
 (* val append : 'a list -> 'a list -> 'a list = <fun> *)
 let append xs =
 	let g = fun x h -> x::h
-in List.fold_right g xs
-
-
-
+in List.fold_right g xs;;
 
 
