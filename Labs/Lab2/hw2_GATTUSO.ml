@@ -2,16 +2,6 @@
 I pledge my honor that I have abided by the Stevens Honor System *)
 
 
-(* add : int -> int -> int *)
-let add x y = x+y;;
-
-type calcExp =
-	| Const of int
-	| Add of (calcExp*calcExp)
-	| Sub of (calcExp*calcExp) 
-	| Mult of (calcExp*calcExp)
-	| Div of (calcExp*calcExp);;
-
 let tTest = Node('a', Leaf 0, Leaf 0);;
 
 (* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  EXERCISE 1 !!!!!!!!!!!!!!!!!!!!!!!!! *)
@@ -26,7 +16,9 @@ type dTree =
 (* 2 ] Define two expressions, tLeft and tRight, of type dTree that represent each of the two
 trees in Fig. 1 *)
 
-let tLeft = Node ('w', Node ('x', Leaf 2, Leaf 5), Leaf 8);;
+(* Leaf () !!! *)
+
+let tLeft = Node ('w', Node ('x', Leaf 2, Leaf 5), Leaf (8));;
 let tRight = Node('w', Node('x', Leaf 2, Leaf 5) , Node('y', Leaf 7, Leaf 5));;
 
 (* 3 ] Implement the following functions indicating, for each one, its type. In the examples
@@ -36,11 +28,68 @@ dTree and similarly for tRight. *)
 (* (a) dTree_height: that given a dTree returns its height *)
 
 let rec dTree_height = function  
-  | Leaf i -> 0
+  | Leaf (i) -> 0
   | Node (_, left, right) -> 1 + max (dTree_height left) (dTree_height right);;
 
 (* (b) dTree_size: that given a dTree returns its size. The size of a dTree consists of the
 number of nodes and leaves. *)
+
+let rec dTree_size = function
+  | Leaf (i) -> 1
+  | Node(_, left, right) -> 1 + dTree_size(left) + dTree_size(right);;
+
+(* (c) dTree_paths: that given a dTree returns a list with all the paths to its leaves. A
+path is a list of digits in the set {0, 1} such that if we follow it on the tree, it
+leads to a leaf. The order in which the paths are listed is irrelevant. *)
+
+let rec dTree_paths = function
+  | Leaf(i) -> [[]]
+  | Node(_, left, right) -> (List.map (fun l -> 0::l) (dTree_paths(left))) @
+  							(List.map (fun l -> 1::l) (dTree_paths(right)));;
+
+(* (d) dTree_is_perfect: that determines whether a dTree is perfect. A dTree is said to be
+perfect if all leaves have the same depth *)
+
+let rec dTree_is_perfect elem = 
+	match elem with
+		| Leaf i -> true
+		| Node (_, left, right) -> 
+			if((dTree_height left) = (dTree_height right) && (dTree_is_perfect left) && 
+			(dTree_is_perfect right)) then
+				true
+			else 
+				false;;
+
+(* dTree_map: that given the following arguments
+	f: char -> char
+	g: int -> int
+	t: dTree
+returns a new dTree resulting from t by applying f to the characters in each node
+and g to the numbers in each leaf. *)
+
+let rec dTree_map f g t =
+	match t with
+	 | Leaf(i) -> Leaf(g i)
+	 | Node(c,l,r) -> Node(f c, dTree_map f g l, dTree_map f g r);; 
+
+
+
+(* Exercise 5 ::::: Define replace_leaf_at, a function that given a tree t and a graph for 
+a function f, replaces all the leaves in t by the value indicated in the graph of the function *)
+
+
+let rec replace_helper path tree v = 
+	match path,tree with
+	| [], Leaf(i) -> Leaf(v)
+	| 0::xs, Node(c, left, right) -> Node(c, (replace_helper xs left v), right)
+	| 1::xs, Node(c, left, right) -> Node(c, left, (replace_helper xs right v))
+	| _ -> failwith "Bad input, :( ";;
+
+
+let rec replace_leaf_at t f =
+	match f with
+	| [] -> t
+	| (f,v)::xs-> replace_leaf_at (replace_helper f t v) xs;;
 
 
 
