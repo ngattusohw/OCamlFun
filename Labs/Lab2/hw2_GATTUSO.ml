@@ -73,8 +73,18 @@ let rec dTree_map f g t =
 	 | Node(c,l,r) -> Node(f c, dTree_map f g l, dTree_map f g r);; 
 
 
+(* 4] Define list_to_tree, a function that given a list of characters l, creates a tree in which
+the symbols of an inner node at level n corresponds to the n-th element in l. The
+value of all of its leaves may be set to 0. E.g. list_to_tree [’x’;’y’;’z’] produces the
+dTree representing: *)
 
-(* Exercise 5 ::::: Define replace_leaf_at, a function that given a tree t and a graph for 
+let rec list_to_tree l = 
+	match l with
+	| [] -> Leaf(0)
+	| x::xs -> Node(x, (list_to_tree xs), (list_to_tree xs));;
+
+
+(* 5] Define replace_leaf_at, a function that given a tree t and a graph for 
 a function f, replaces all the leaves in t by the value indicated in the graph of the function *)
 
 
@@ -91,5 +101,11 @@ let rec replace_leaf_at t f =
 	| [] -> t
 	| (f,v)::xs-> replace_leaf_at (replace_helper f t v) xs;;
 
+(* 6] Define a function bf_to_dTree that takes a pair-encoding of a boolean function and
+returns its tree-encoding. Note that, depending on the order in which the formal
+parameters are processed, there may be more than one possible tree-encoding for a
+given pair-encoding. You may return any of them *)
+
+let bf_to_dTree f = replace_leaf_at (list_to_tree (fst f)) (snd f);; 
 
 
