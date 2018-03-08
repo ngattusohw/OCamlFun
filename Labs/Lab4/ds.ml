@@ -1,4 +1,10 @@
-(* This file defines expressed values and environments *)
+(* This file defines expressed values and environments 
+
+Nick Gattuso
+
+I pledge my honor that I have abided by the stevens honor system
+
+*)
 
 
 (* expressed values and environments are defined mutually recursively *)
@@ -29,7 +35,7 @@ let rec find_dec (decs:(Ast.dec list)) (id:string):(Ast.dec option) =
 
 let rec lookup (env:env) (id:string):exp_val =
   match env with
-  | EmptyEnv                       -> failwith "Id not found"
+  | EmptyEnv                       -> failwith "Id not ass found"
   | LetEnv (key, value, saved_env) ->
     if id=key then
       value

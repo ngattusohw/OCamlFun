@@ -1,3 +1,5 @@
+(* Nick Gattuso --> I pledge my honor that I have abided by the stevens honor system *)
+
 open Ast
 open Ds
 
@@ -61,7 +63,7 @@ and
     eval (LetEnv (x, v1, en)) e2
   | Letrec(decs, e2) ->
     (* TODO evaluate e2 with a new LetrecEnv *)
-    let v1 = eval (LetrecEnv (decs, en)) e2
+    eval (LetrecEnv (decs, en)) e2
   | Proc(x,e)            -> ProcVal (x,e,en)
   | App(e1,e2)           ->
     let v1 = eval en e1 in
