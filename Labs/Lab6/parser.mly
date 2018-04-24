@@ -181,9 +181,9 @@ expr:
     | BEGIN; es = exprs; END { BeginEnd(es) }
     | LPAREN; e = expr; RPAREN {e}
     | LPAREN; MINUS e = expr; RPAREN  { Sub(Int 0, e) }
-    (* TODO: unit expressions *)
-    (* TODO: pair expressions *)
-    (* TODO: list expressions *)
+    | UNIT { Unit }
+    | PAIR ; LPAREN ; e1 = expr ; COMMA ; e2 = expr ; RPAREN { Pair ( e1 , e2 ) }
+    | UNPAIR ; LPAREN ; id1 = ID ; COMMA ; id2 = ID ; RPAREN ; EQUALS ; e_pair = expr ; IN ; e_body = expr { Unpair ( id1 , id2 , e_pair , e_body ) }
     (* TODO: tree expressions *)
     ;
 
@@ -196,8 +196,8 @@ texpr:
     | t1 = texpr; ARROW; t2 = texpr { FuncType(t1,t2) }
     | LPAREN; t1 = texpr; RPAREN { t1 }
     | REFTYPE; t1 = texpr { RefType(t1) }
-    (* TODO: unit type *)
-    (* TODO: pair type *)
+    | UNITTYPE { UnitType }
+    | LESS_THAN ; t1 = texpr ; TIMES ; t2 = texpr ; GREATER_THAN { PairType (t1 , t2 ) }
     (* TODO: list type *)
     (* TODO: tree type *)
 

@@ -9,6 +9,8 @@ type exp_val =
   | BoolVal of bool
   | ProcVal of string*Ast.expr*env
   | RefVal of int
+  | UnitVal
+  | PairVal of exp_val*exp_val
   (* TODO: UnitVal
    * TODO: PairVal
    * TODO: ListVal
