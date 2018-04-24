@@ -35,7 +35,7 @@ let rec find_dec (decs:(Ast.dec list)) (id:string):(Ast.dec option) =
 
 let rec lookup (env:env) (id:string):exp_val =
   match env with
-  | EmptyEnv                       -> failwith "Id not ass found"
+  | EmptyEnv                       -> failwith "Id not found"
   | LetEnv (key, value, saved_env) ->
     if id=key then
       value
