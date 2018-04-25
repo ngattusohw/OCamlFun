@@ -97,24 +97,24 @@ and
     RefType(t1)
   | DeRef(e) -> 
     let t1 = type_of_expr en e in
-    match t1 with
+    (match t1 with
     | RefType(t) -> t
-    | _ -> failwith "Reftype expected"
-  | SetRef(e1,e2) ->
+    | _ -> failwith "Reftype expected")
+  | SetRef(e1, e2) ->
     let t1 = type_of_expr en e1 in 
     let t2 = type_of_expr en e2 in 
-    match t1,t2 with
-    | RefType(t3),t4 when t3 = t4 -> UnitType
-    | _ -> failwith "Expected RefType"
+    (match t1 with
+    | RefType(t3) when t3 = t2 -> UnitType
+    | _ -> failwith "Expected RefType")
 
   (* pair *)
   | Pair(e1, e2) -> PairType(type_of_expr en e1, type_of_expr en e2)
 
   | Unpair(id1, id2, def, body) ->
-    match type_of_expr en def with
+    (match type_of_expr en def with
     | PairType(x,y) -> 
       type_of_expr (extend_tenv id1 x (extend_tenv id2 y en)) body
-    | _ -> failwith "Fail with Not a PairType" 
+    | _ -> failwith "Fail with Not a PairType")
 
   (* list *)
   | EmptyList(t) ->
@@ -122,24 +122,24 @@ and
   | Cons(he, te) ->
     let t1 = type_of_expr en he in 
     let t2 = type_of_expr en te in 
-    match t2,t1 with
+    (match t2,t1 with
     | ListType(e2),e1 when e2 = e1 -> ListType(e2)
-    | _ -> failwith "Not a list type"
+    | _ -> failwith "Not a list type")
   | Null(e) ->
     let t1 = type_of_expr en e in
-    match t1 with
+    (match t1 with
     | ListType(e1) -> BoolType
-    | _ -> failwith "Not a list type"
+    | _ -> failwith "Not a list type")
   | Hd(e) ->
     let t1 = type_of_expr en e in 
-    match t1 with
+    (match t1 with
     | ListType(e1) -> e1
-    | _ -> failwith "Not a list type"
+    | _ -> failwith "Not a list type")
   | Tl(e) ->
     let t1 = type_of_expr en e in
-    match t1 with
+    (match t1 with
     | ListType(e1) -> ListType(e1)
-    | _ -> failwith "Not a list type"
+    | _ -> failwith "Not a list type")
 
   (* tree *)
   | EmptyTree(t) ->
@@ -148,29 +148,29 @@ and
     let t1 = type_of_expr en de in 
     let t2 = type_of_expr en le in 
     let t3 = type_of_expr en re in 
-    match t1,t2,t3 with
+    (match t1,t2,t3 with
     | e1,TreeType(e2),TreeType(e3) when e1 = e2 && e2 = e3 -> TreeType(e2)
-    | _ -> failwith "Not a tree type!"
+    | _ -> failwith "Not a tree type!")
   | NullT(t) ->
     let t1 = type_of_expr en t in
-    match t1 with
+    (match t1 with
     | TreeType(e1) -> BoolType
-    | _ -> failwith "Not a treeType"
+    | _ -> failwith "Not a treeType")
   | GetData(t) ->
     let t1 = type_of_expr en t in
-    match t1 with
+    (match t1 with
     | TreeType(e1) -> e1
-    | _ -> failwith " Not a tree type"
+    | _ -> failwith " Not a tree type")
   | GetLST(t) ->
     let t1 = type_of_expr en t in 
-    match t1 with
+    (match t1 with
     | TreeType(e1) -> TreeType(e1)
-    | _ -> failwith "Not a tree type"
+    | _ -> failwith "Not a tree type")
   | GetRST(t) ->
     let t1 = type_of_expr en t in 
-    match t1 with
+    (match t1 with
     | TreeType(e1) -> TreeType(e1)
-    | _ -> failwith "Not a tree type"
+    | _ -> failwith "Not a tree type")
   | Debug ->
     print_string "Environment:\n";
     print_string @@ string_of_tenv en;

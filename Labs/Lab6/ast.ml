@@ -104,7 +104,7 @@ and string_of_texpr = function
   | PairType(e1,e2) -> "PairType (" ^ string_of_texpr e1 ^ "," ^ string_of_texpr e2 ^ ")"
   | ListType(l) -> "ListType ("  ^ string_of_texpr l ^ ")"
   | TreeType(t) -> " TreeType (" ^ string_of_texpr t ^ ")"
-  | _ -> failwith "Not a valid type"
+  | _-> failwith "Not a valid type"
 
 let string_of_prog (AProg e)  = string_of_expr e
 

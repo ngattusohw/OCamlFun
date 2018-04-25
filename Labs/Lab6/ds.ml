@@ -79,7 +79,7 @@ let treeVal_to_tree =  function
   | _ -> failwith "Expected a TreeVal!"
 
 let rec string_of_list = function
-  | x -> (string_of_expval x)
+  | x::[] -> (string_of_expval x)
   | x::xs -> (string_of_expval x) ^ "," ^ string_of_list xs
 
  and string_of_expval = function
