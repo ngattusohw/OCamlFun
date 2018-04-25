@@ -93,51 +93,88 @@ and
 
   (* explicit ref *)
   | NewRef(e) ->
-    failwith "TODO: Implement me!"
-  | DeRef(e) ->
-    failwith "TODO: Implement me!"
+    let t1 = type_of_expr en e in
+    RefType(t1)
+  | DeRef(e) -> 
+    let t1 = type_of_expr en e in
+    match t1 with
+    | RefType(t) -> t
+    | _ -> failwith "Reftype expected"
   | SetRef(e1,e2) ->
-    failwith "TODO: Implement me!"
+    let t1 = type_of_expr en e1 in 
+    let t2 = type_of_expr en e2 in 
+    match t1,t2 with
+    | RefType(t3),t4 when t3 = t4 -> UnitType
+    | _ -> failwith "Expected RefType"
 
   (* pair *)
-  | Pair(e1, e2) ->
-    failwith "TODO: Implement me!"
+  | Pair(e1, e2) -> PairType(type_of_expr en e1, type_of_expr en e2)
+
   | Unpair(id1, id2, def, body) ->
-    failwith "TODO: Implement me!"
+    match type_of_expr en def with
+    | PairType(x,y) -> 
+      type_of_expr (extend_tenv id1 x (extend_tenv id2 y en)) body
+    | _ -> failwith "Fail with Not a PairType" 
 
   (* list *)
   | EmptyList(t) ->
-    failwith "TODO: Implement me!"
+    ListType (t)
   | Cons(he, te) ->
-    failwith "TODO: Implement me!"
+    let t1 = type_of_expr en he in 
+    let t2 = type_of_expr en te in 
+    match t2,t1 with
+    | ListType(e2),e1 when e2 = e1 -> ListType(e2)
+    | _ -> failwith "Not a list type"
   | Null(e) ->
-    failwith "TODO: Implement me!"
+    let t1 = type_of_expr en e in
+    match t1 with
+    | ListType(e1) -> BoolType
+    | _ -> failwith "Not a list type"
   | Hd(e) ->
-    failwith "TODO: Implement me!"
+    let t1 = type_of_expr en e in 
+    match t1 with
+    | ListType(e1) -> e1
+    | _ -> failwith "Not a list type"
   | Tl(e) ->
-    failwith "TODO: Implement me!"
+    let t1 = type_of_expr en e in
+    match t1 with
+    | ListType(e1) -> ListType(e1)
+    | _ -> failwith "Not a list type"
 
   (* tree *)
   | EmptyTree(t) ->
-    failwith "TODO: Implement me!"
+    TreeType(t)
   | Node(de, le, re) ->
-    failwith "TODO: Implement me!"
+    let t1 = type_of_expr en de in 
+    let t2 = type_of_expr en le in 
+    let t3 = type_of_expr en re in 
+    match t1,t2,t3 with
+    | e1,TreeType(e2),TreeType(e3) when e1 = e2 && e2 = e3 -> TreeType(e2)
+    | _ -> failwith "Not a tree type!"
   | NullT(t) ->
-    failwith "TODO: Implement me!"
+    let t1 = type_of_expr en t in
+    match t1 with
+    | TreeType(e1) -> BoolType
+    | _ -> failwith "Not a treeType"
   | GetData(t) ->
-    failwith "TODO: Implement me!"
+    let t1 = type_of_expr en t in
+    match t1 with
+    | TreeType(e1) -> e1
+    | _ -> failwith " Not a tree type"
   | GetLST(t) ->
-    failwith "TODO: Implement me!"
+    let t1 = type_of_expr en t in 
+    match t1 with
+    | TreeType(e1) -> TreeType(e1)
+    | _ -> failwith "Not a tree type"
   | GetRST(t) ->
-    failwith "TODO: Implement me!"
-
-
+    let t1 = type_of_expr en t in 
+    match t1 with
+    | TreeType(e1) -> TreeType(e1)
+    | _ -> failwith "Not a tree type"
   | Debug ->
     print_string "Environment:\n";
     print_string @@ string_of_tenv en;
     UnitType
-
-
 
 let parse s =
   let lexbuf = Lexing.from_string s in

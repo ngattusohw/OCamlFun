@@ -100,11 +100,11 @@ and string_of_texpr = function
   | BoolType -> "bool"
   | FuncType(t1,t2) -> "("^string_of_texpr t1^"->"^string_of_texpr t2^")"
   | RefType(t) -> "Ref("^string_of_texpr t^")"
-  (* TODO: UnitType
-   *       PairType
-   *       ListType
-   *       TreeType *)
-  | _ -> failwith "TODO: implement me"
+  | UnitType -> "UnitType"
+  | PairType(e1,e2) -> "PairType (" ^ string_of_texpr e1 ^ "," ^ string_of_texpr e2 ^ ")"
+  | ListType(l) -> "ListType ("  ^ string_of_texpr l ^ ")"
+  | TreeType(t) -> " TreeType (" ^ string_of_texpr t ^ ")"
+  | _ -> failwith "Not a valid type"
 
 let string_of_prog (AProg e)  = string_of_expr e
 

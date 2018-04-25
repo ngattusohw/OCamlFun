@@ -11,10 +11,9 @@ type exp_val =
   | RefVal of int
   | UnitVal
   | PairVal of exp_val*exp_val
-  (* TODO: UnitVal
-   * TODO: PairVal
-   * TODO: ListVal
-   * TODO: TreeVal *)
+  | TreeVal of btree
+  | ListVal of exp_val list
+
 and
   env =
   | EmptyEnv
@@ -59,29 +58,45 @@ let refVal_to_int =  function
   |  RefVal n -> n
   | _ -> failwith "Expected a reference!"
 
-(* TODO: unitVal_to_unit
- * TODO: pairVal_to_fst
- * TODO: pairVal_to_snd
- * TODO: listVal_to_list
- * TODO: treeVal_to_tree *)
+let unitVal_to_unit =  function
+  |  UnitVal -> ()
+  | _ -> failwith "Expected a Unit!"
 
-let rec string_of_expval = function
+let pairVal_to_fst =  function
+  | PairVal(x,y) -> x
+  | _ -> failwith "Expected a PairVal!"
+
+let pairVal_to_snd =  function
+  | PairVal(x,y) -> y
+  | _ -> failwith "Expected a PairVal!"
+
+let listVal_to_list =  function
+  | ListVal l -> l
+  | _ -> failwith "Expected a ListVal!"
+
+let treeVal_to_tree =  function
+  | TreeVal t -> t
+  | _ -> failwith "Expected a TreeVal!"
+
+let rec string_of_list = function
+  | x -> (string_of_expval x)
+  | x::xs -> (string_of_expval x) ^ "," ^ string_of_list xs
+
+ and string_of_expval = function
   | NumVal n -> "NumVal " ^ string_of_int n
   | BoolVal b -> "BoolVal " ^ string_of_bool b
   | ProcVal (id,body,env) -> "ProcVal ("^id^","^Ast.string_of_expr body^","^ string_of_env env^")"
   | RefVal i -> "RefVal (" ^ string_of_int i ^ ")"
-  (* TODO: new cases for
-   *                    PairVal
-   *                    ListVal
-   *                    TreeVal
-   *                    UnitVal *)
-
-and
+  | PairVal(e1,e2) -> "PairVal (" ^ string_of_expval e1 ^ "," ^ string_of_expval e2 ^ ")"
+  | ListVal l -> "ListVal ([" ^ string_of_list l ^ "])" 
+  | TreeVal t -> "TreeVal (" ^ string_of_btree t ^ ")"
+  | UnitVal -> "UnitVal"
+ and
   string_of_env  = function
   | EmptyEnv -> ""
   | ExtendEnv(id,v,env) -> "("^id^","^string_of_expval v^")"^string_of_env env
   | ExtendEnvRec(id,param,body,env) -> "("^id^","^param^","^Ast.string_of_expr body^")"^string_of_env env
-and
+ and
   string_of_btree = function
   | EmptyNodeVal t -> "EmptyNode"
   | NodeVal(data, lst, rst) -> "NodeVal(" ^ (string_of_expval data) ^ "," ^ (string_of_btree lst) ^ "," ^ (string_of_btree rst) ^ ")"

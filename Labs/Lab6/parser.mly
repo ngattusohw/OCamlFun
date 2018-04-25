@@ -163,6 +163,8 @@ prog:
 expr:
     | i = INT { Int i }
     | x = ID { Var x }
+    (* unit *)
+    | UNIT { Unit }
     | DEBUG { Debug }
     | e1 = expr; PLUS; e2 = expr { Add(e1,e2) }
     | e1 = expr; MINUS; e2 = expr { Sub(e1,e2) }
@@ -181,10 +183,22 @@ expr:
     | BEGIN; es = exprs; END { BeginEnd(es) }
     | LPAREN; e = expr; RPAREN {e}
     | LPAREN; MINUS e = expr; RPAREN  { Sub(Int 0, e) }
-    | UNIT { Unit }
-    | PAIR ; LPAREN ; e1 = expr ; COMMA ; e2 = expr ; RPAREN { Pair ( e1 , e2 ) }
-    | UNPAIR ; LPAREN ; id1 = ID ; COMMA ; id2 = ID ; RPAREN ; EQUALS ; e_pair = expr ; IN ; e_body = expr { Unpair ( id1 , id2 , e_pair , e_body ) }
-    (* TODO: tree expressions *)
+    (* pair expressions *)
+    | PAIR; LPAREN; e1 = expr; COMMA; e2 = expr; RPAREN { Pair(e1, e2) }
+    | UNPAIR; LPAREN; id1 = ID; COMMA; id2 = ID; RPAREN; EQUALS; e_pair = expr; IN; e_body = expr { Unpair(id1, id2, e_pair, e_body) }
+    (* list expressions *)
+    | EMPTYLIST; ele_type = texpr { EmptyList(ele_type) }
+    | CONS; LPAREN; he = expr; COMMA; te = expr; RPAREN { Cons(he, te) }
+    | NULL_QUESTION; LPAREN; e = expr; RPAREN { Null(e) }
+    | HD; LPAREN; e = expr; RPAREN { Hd(e) }
+    | TL; LPAREN; e = expr; RPAREN { Tl(e) }
+    (* tree expressions *)
+    | EMPTYTREE; ele_type = texpr { EmptyTree(ele_type) }
+    | NODE; LPAREN; data_exp = expr; COMMA; lst_exp = expr; COMMA; rst_exp = expr; RPAREN { Node(data_exp, lst_exp, rst_exp) }
+    | NULLT_QUESTION; LPAREN; e = expr; RPAREN { NullT(e) }
+    | GETDATA; LPAREN; e = expr; RPAREN { GetData(e) }
+    | GETLST; LPAREN; e = expr; RPAREN { GetLST(e) }
+    | GETRST; LPAREN; e = expr; RPAREN { GetRST(e) }
     ;
 
 exprs:
@@ -193,13 +207,17 @@ exprs:
 texpr:
     | INTTYPE { IntType }
     | BOOLTYPE { BoolType }
+    (* unit type *)
+    | UNITTYPE { UnitType }
     | t1 = texpr; ARROW; t2 = texpr { FuncType(t1,t2) }
     | LPAREN; t1 = texpr; RPAREN { t1 }
     | REFTYPE; t1 = texpr { RefType(t1) }
-    | UNITTYPE { UnitType }
-    | LESS_THAN ; t1 = texpr ; TIMES ; t2 = texpr ; GREATER_THAN { PairType (t1 , t2 ) }
-    (* TODO: list type *)
-    (* TODO: tree type *)
+    (* pair type *)
+    | LESS_THAN; t1 = texpr; TIMES; t2 = texpr; GREATER_THAN { PairType(t1, t2) }
+    (* list type *)
+    | LISTTYPE; LPAREN; t = texpr; RPAREN { ListType(t) }
+    (* tree type *)
+    | TREETYPE; LPAREN; t = texpr; RPAREN { TreeType(t) }
 
 
 
